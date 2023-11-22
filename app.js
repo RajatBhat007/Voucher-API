@@ -2,9 +2,11 @@ const express = require("express");
 const multer = require("multer");
 const xlsx = require("xlsx");
 const mysql = require("mysql2/promise");
+const cors = require("cors");
 
 const app = express();
 const port = 3000;
+app.use(cors({ origin: true }));
 
 // MySQL database connection
 const pool = mysql.createPool({
