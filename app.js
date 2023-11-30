@@ -3,10 +3,16 @@ const multer = require("multer");
 const xlsx = require("xlsx");
 const mysql = require("mysql2/promise");
 const cors = require("cors");
+const https = require("https");
+const axios = require("axios");
 
 const app = express();
-const port = 3000;
+const port = 7000;
 app.use(cors({ origin: true }));
+
+const templateId = "6511231dd6fc055829453c62";
+const templateIdVoucher = "655f4072d6fc05544d094a42";
+const authKey = "318438A60qs5Ysgqr5e47c80dP1";
 
 // MySQL database connection
 const pool = mysql.createPool({
@@ -315,6 +321,54 @@ app.post("/autoAssignVoucher", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Better Luck next time" });
+  }
+});
+
+app.post("/sendVoucher/:mobilenumber/:number/:date", async (req, res) => {
+  const { mobilenumber, number, date } = req.params;
+
+  if (!mobilenumber || !number || !date) {
+    return res
+      .status(400)
+      .send("Mobile number, number, and date are required.");
+  }
+
+  const appendmobilenumber = "+91" + mobilenumber;
+
+  const recipients = [
+    {
+      mobiles: appendmobilenumber,
+      number: number,
+      date: date,
+    },
+  ];
+
+  const otpURL = "https://control.msg91.com/api/v5/flow";
+
+  try {
+    const response = await axios.post(
+      otpURL,
+      {
+        template_id: "655f4072d6fc05544d094a42",
+        recipients: recipients,
+      },
+      {
+        headers: {
+          authkey: authKey, // Replace with your actual auth key
+        },
+      }
+    );
+
+    console.log(response.data);
+
+    if (response.data.type === "success") {
+      res.status(200).send("Voucher details sent successfully.");
+    } else {
+      res.status(400).send(response.data.message);
+    }
+  } catch (error) {
+    console.error("Error sending Voucher Details:", error);
+    res.status(500).send("Error sending Voucher Details.");
   }
 });
 
