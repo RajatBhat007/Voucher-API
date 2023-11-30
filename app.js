@@ -375,16 +375,16 @@ app.post("/sendVoucher/:mobilenumber/:number/:date", async (req, res) => {
 });
 
 // Start the server
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
-
-// const httpsOptions = {
-//   key: fs.readFileSync("/opt/bitnami/apache/conf/connectopia.app.key"),
-//   cert: fs.readFileSync("/opt/bitnami/apache/conf/connectopia.app.crt"),
-//   // passphrase: "Tgc@0987",
-// };
-
-// const server = https.createServer(httpsOptions, app).listen(port, () => {
+// app.listen(port, () => {
 //   console.log(`Server is running on port ${port}`);
 // });
+
+const httpsOptions = {
+  key: fs.readFileSync("/opt/bitnami/apache/conf/connectopia.app.key"),
+  cert: fs.readFileSync("/opt/bitnami/apache/conf/connectopia.app.crt"),
+  // passphrase: "Tgc@0987",
+};
+
+const server = https.createServer(httpsOptions, app).listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
