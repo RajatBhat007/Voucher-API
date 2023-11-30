@@ -289,6 +289,7 @@ app.post("/autoAssignVoucher", async (req, res) => {
           "Customer with the provided phone number already has a voucher assigned for the specified id_organisation and campaign_id",
         assignedVoucher: {
           voucher_serial_number: existingAssignment[0].voucher_serial_number,
+          client_expiry_date: existingAssignment[0].client_expiry_date,
         },
       });
     }
@@ -316,6 +317,7 @@ app.post("/autoAssignVoucher", async (req, res) => {
       message: "Voucher assigned successfully",
       assignedVoucher: {
         voucher_serial_number: matchingVoucher[0].voucher_serial_number,
+        client_expiry_date: matchingVoucher[0].client_expiry_date,
       },
     });
   } catch (error) {
@@ -373,16 +375,16 @@ app.post("/sendVoucher/:mobilenumber/:number/:date", async (req, res) => {
 });
 
 // Start the server
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${port}`);
-// });
-
-const httpsOptions = {
-  key: fs.readFileSync("/opt/bitnami/apache/conf/connectopia.app.key"),
-  cert: fs.readFileSync("/opt/bitnami/apache/conf/connectopia.app.crt"),
-  // passphrase: "Tgc@0987",
-};
-
-const server = https.createServer(httpsOptions, app).listen(port, () => {
+app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+// const httpsOptions = {
+//   key: fs.readFileSync("/opt/bitnami/apache/conf/connectopia.app.key"),
+//   cert: fs.readFileSync("/opt/bitnami/apache/conf/connectopia.app.crt"),
+//   // passphrase: "Tgc@0987",
+// };
+
+// const server = https.createServer(httpsOptions, app).listen(port, () => {
+//   console.log(`Server is running on port ${port}`);
+// });
